@@ -1,0 +1,8 @@
+stages:
+  train:
+    cmd: python train.py
+    deps:
+      - train.py
+      - observations_filtered.csv
+    outs:
+      - models/model.pt
