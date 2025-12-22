@@ -1,0 +1,5 @@
+outs:
+- md5: 9b5517b4c6c4858fd9d26879b4fdadb3
+  size: 378719
+  hash: md5
+  path: birds_3000.csv
