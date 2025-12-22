@@ -4,19 +4,15 @@ from pathlib import Path
 from PIL import Image
 from io import BytesIO
 
-# --------- НАСТРОЙКИ ----------
 INPUT_CSV = "observations_filtered.csv"
 OUTPUT_CSV = "birds_3000.csv"
 IMAGES_DIR = Path("data/images")
 N_SAMPLES = 3000
-# -----------------------------
 
 IMAGES_DIR.mkdir(parents=True, exist_ok=True)
 
-# Загружаем CSV
 df = pd.read_csv(INPUT_CSV)
 
-# Берём первые 3000 строк
 df = df.head(N_SAMPLES)
 
 records = []
@@ -48,7 +44,6 @@ for idx, row in df.iterrows():
     except Exception as e:
         print(f"Failed to download {image_url}: {e}")
 
-# Сохраняем новый датасет
 new_df = pd.DataFrame(records)
 new_df.to_csv(OUTPUT_CSV, index=False)
 
