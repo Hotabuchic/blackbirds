@@ -1,18 +1,37 @@
 schema: '2.0'
 stages:
   train:
-    cmd: python train.py
+    cmd: "python train.py --csv_path birds_3000.csv --batch_size 64 --epochs 20 --lr
+      0.0001 --model_path models/model.pt\n"
     deps:
-    - path: observations_filtered.csv
+    - path: birds_3000.csv
       hash: md5
-      md5: 43bd49b0a168412537f7632f15a111c1
-      size: 6736764
+      md5: 9b5517b4c6c4858fd9d26879b4fdadb3
+      size: 378719
+    - path: data/images
+      hash: md5
+      md5: b78507fb0b88b0b0b6b8e5940d935780.dir
+      size: 143406188
+      nfiles: 2853
+    - path: dataset.py
+      hash: md5
+      md5: 98a52403fced7f5dc4ae5d2b5874512b
+      size: 1552
+    - path: model.py
+      hash: md5
+      md5: a9fc607bbfc65342641e846c6c0fb640
+      size: 598
     - path: train.py
       hash: md5
-      md5: adb1c595a8d151f930b4af8424c302a2
-      size: 66
+      md5: e7471d18cef2b2936546116318d68889
+      size: 2413
+    params:
+      params.yaml:
+        train.batch_size: 64
+        train.epochs: 20
+        train.lr: 0.0001
     outs:
     - path: models/model.pt
       hash: md5
-      md5: 602009d5aea1c1ef06fd777968f7e80e
-      size: 10
+      md5: ddb2d928f8fa9a938df70cf14a753c13
+      size: 44788811

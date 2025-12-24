@@ -1,8 +1,24 @@
 stages:
   train:
-    cmd: python train.py
+    cmd: >
+      python train.py
+      --csv_path birds_3000.csv
+      --batch_size ${train.batch_size}
+      --epochs ${train.epochs}
+      --lr ${train.lr}
+      --model_path models/model.pt
+
     deps:
       - train.py
-      - observations_filtered.csv
+      - model.py
+      - dataset.py
+      - birds_3000.csv
+      - data/images
+
+    params:
+      - train.batch_size
+      - train.epochs
+      - train.lr
+
     outs:
       - models/model.pt
