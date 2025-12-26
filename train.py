@@ -1,3 +1,4 @@
+import json
 import os
 import argparse
 import torch
@@ -61,12 +62,19 @@ def validate(model, dataloader, criterion, device):
 def main(args):
     device = "cuda" if torch.cuda.is_available() else "cpu"
 
-    train_loader, val_loader, classes = get_dataloaders(
+    train_loader, val_loader, dataset = get_dataloaders(
         args.csv_path,
         batch_size=args.batch_size
     )
 
-    model = BirdClassifier(num_classes=len(classes)).to(device)
+    idx_to_class = {
+        idx: cls for cls, idx in dataset.class_to_idx.items()
+    }
+
+    with open("class_mapping.json", "w", encoding="utf-8") as f:
+        json.dump(idx_to_class, f, ensure_ascii=False, indent=2)
+
+    model = BirdClassifier(num_classes=len(dataset.classes)).to(device)
 
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(model.parameters(), lr=args.lr)

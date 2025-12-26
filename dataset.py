@@ -74,4 +74,4 @@ def get_dataloaders(
         num_workers=2
     )
 
-    return train_loader, val_loader, dataset.classes
+    return train_loader, val_loader, dataset

@@ -15,16 +15,16 @@ stages:
       nfiles: 2853
     - path: dataset.py
       hash: md5
-      md5: bab6b2ca7e9d4e7196f35ed00cae1ef6
-      size: 1961
+      md5: 9e33f97328ef7e0f21b4caf84b559b64
+      size: 1953
     - path: model.py
       hash: md5
       md5: a9fc607bbfc65342641e846c6c0fb640
       size: 598
     - path: train.py
       hash: md5
-      md5: 74651a2a97fc0e0d246fd214b5e55825
-      size: 3327
+      md5: cfff384d6fe826b5184434fa95c2de3c
+      size: 3576
     params:
       params.yaml:
         train.batch_size: 64
@@ -33,5 +33,5 @@ stages:
     outs:
     - path: models/model.pt
       hash: md5
-      md5: 9e352d301e8fc835549fda5133fca92a
+      md5: d6976b4cfc6e22d8eab7d95fcd2597f6
       size: 44788811
