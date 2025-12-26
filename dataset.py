@@ -34,10 +34,13 @@ class BirdDataset(Dataset):
         return image, torch.tensor(label, dtype=torch.long)
 
 
-def get_dataloader(
-    csv_file: str,
-    batch_size: int = 32,
-    shuffle: bool = True
+from torch.utils.data import random_split
+
+
+def get_dataloaders(
+        csv_file: str,
+        batch_size: int = 32,
+        val_split: float = 0.2
 ):
     transform = transforms.Compose([
         transforms.Resize((224, 224)),
@@ -50,11 +53,25 @@ def get_dataloader(
 
     dataset = BirdDataset(csv_file, transform=transform)
 
-    dataloader = DataLoader(
-        dataset,
+    val_size = int(len(dataset) * val_split)
+    train_size = len(dataset) - val_size
+
+    train_dataset, val_dataset = random_split(
+        dataset, [train_size, val_size]
+    )
+
+    train_loader = DataLoader(
+        train_dataset,
         batch_size=batch_size,
-        shuffle=shuffle,
+        shuffle=True,
         num_workers=2
     )
 
-    return dataloader, dataset.classes
+    val_loader = DataLoader(
+        val_dataset,
+        batch_size=batch_size,
+        shuffle=False,
+        num_workers=2
+    )
+
+    return train_loader, val_loader, dataset.classes

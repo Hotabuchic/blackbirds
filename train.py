@@ -7,7 +7,7 @@ import mlflow
 import mlflow.pytorch
 
 from model import BirdClassifier
-from dataset import get_dataloader
+from dataset import get_dataloaders
 
 
 def train_one_epoch(model, dataloader, criterion, optimizer, device):
@@ -35,13 +35,35 @@ def train_one_epoch(model, dataloader, criterion, optimizer, device):
     return running_loss / total, correct / total
 
 
+def validate(model, dataloader, criterion, device):
+    model.eval()
+
+    running_loss = 0.0
+    correct = 0
+    total = 0
+
+    with torch.no_grad():
+        for images, labels in dataloader:
+            images = images.to(device)
+            labels = labels.to(device)
+
+            outputs = model(images)
+            loss = criterion(outputs, labels)
+
+            running_loss += loss.item() * images.size(0)
+            _, predicted = torch.max(outputs, 1)
+            correct += (predicted == labels).sum().item()
+            total += labels.size(0)
+
+    return running_loss / total, correct / total
+
+
 def main(args):
     device = "cuda" if torch.cuda.is_available() else "cpu"
 
-    train_loader, classes = get_dataloader(
+    train_loader, val_loader, classes = get_dataloaders(
         args.csv_path,
-        batch_size=args.batch_size,
-        shuffle=True
+        batch_size=args.batch_size
     )
 
     model = BirdClassifier(num_classes=len(classes)).to(device)
@@ -56,18 +78,25 @@ def main(args):
     })
 
     for epoch in range(args.epochs):
-        loss, acc = train_one_epoch(
+        train_loss, train_acc = train_one_epoch(
             model, train_loader, criterion, optimizer, device
         )
 
+        val_loss, val_acc = validate(
+            model, val_loader, criterion, device
+        )
+
         mlflow.log_metrics({
-            "loss": loss,
-            "accuracy": acc
+            "train_loss": train_loss,
+            "train_acc": train_acc,
+            "val_loss": val_loss,
+            "val_acc": val_acc
         }, step=epoch)
 
         print(
-            f"Epoch [{epoch+1}/{args.epochs}] "
-            f"Loss: {loss:.4f} | Acc: {acc:.4f}"
+            f"Epoch [{epoch + 1}/{args.epochs}] "
+            f"Train Loss: {train_loss:.4f} | Train Acc: {train_acc:.4f} "
+            f"Val Loss: {val_loss:.4f} | Val Acc: {val_acc:.4f}"
         )
 
     os.makedirs("models", exist_ok=True)

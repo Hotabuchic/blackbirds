@@ -1,4 +1,4 @@
 train:
   batch_size: 64
-  epochs: 20
-  lr: 0.01
+  epochs: 5
+  lr: 0.00005

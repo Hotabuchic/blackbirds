@@ -10,6 +10,9 @@ class BirdClassifier(nn.Module):
         for param in self.backbone.parameters():
             param.requires_grad = False
 
+        for param in self.backbone.layer4.parameters():
+            param.requires_grad = True
+
         in_features = self.backbone.fc.in_features
         self.backbone.fc = nn.Linear(in_features, num_classes)
 
